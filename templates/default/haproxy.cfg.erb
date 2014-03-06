@@ -7,18 +7,27 @@ global
         #quiet
         user haproxy
         group haproxy
+	daemon
+<% if node["haproxy"]["enable_chroot"] -%>
+	chroot      /var/lib/haproxy
+<% end -%>
+	pidfile     /var/run/haproxy.pid
+<% if node["haproxy"]["enable_stats_socket"] -%>
+	stats socket /var/lib/haproxy/stats
+<% end -%>
 
 defaults
         log     global
         mode    http
         option  httplog
         option  dontlognull
+	option forwardfor       except 127.0.0.0/8
         retries 3
-        redispatch
+        option  redispatch
         maxconn 2000
         contimeout      5000
-        clitimeout      50000
-        srvtimeout      50000
+        clitimeout      500000
+        srvtimeout      500000
         
 # Set up application listeners here.
 listen application 0.0.0.0:<%= node["haproxy"]["incoming_port"] %>

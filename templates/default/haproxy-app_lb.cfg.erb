@@ -7,6 +7,14 @@ global
         #quiet
         user haproxy
         group haproxy
+        daemon
+<% if node["haproxy"]["enable_chroot"] -%>
+        chroot      /var/lib/haproxy
+<% end -%>
+        pidfile     /var/run/haproxy.pid
+<% if node["haproxy"]["enable_stats_socket"] -%>
+        stats socket /var/lib/haproxy/stats
+<% end -%>
 
 defaults
         log     global
@@ -14,11 +22,11 @@ defaults
         option  httplog
         option  dontlognull
         retries 3
-        redispatch
+        option  redispatch
         maxconn 2000
         contimeout      5000
-        clitimeout      50000
-        srvtimeout      50000
+        clitimeout      500000
+        srvtimeout      500000
         <% if node["haproxy"]["x_forwarded_for"] -%>
         option httpclose
         option forwardfor
