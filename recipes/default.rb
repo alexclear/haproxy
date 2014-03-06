@@ -21,11 +21,14 @@ package "haproxy" do
   action :install
 end
 
-template "/etc/default/haproxy" do
-  source "haproxy-default.erb"
-  owner "root"
-  group "root"
-  mode 0644
+case node[:platform]
+when "debian","ubuntu"
+  template "/etc/default/haproxy" do
+    source "haproxy-default.erb"
+    owner "root"
+    group "root"
+    mode 0644
+  end
 end
 
 service "haproxy" do
