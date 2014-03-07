@@ -34,7 +34,7 @@ pool_members.map! do |member|
         member['cloud']['public_ipv4']
       end
     else
-      member['ipaddress']
+      member.network.interfaces.map { |p, f| f.has_key?(:addresses) ? f[:addresses].keys : "127.0.0.1" }.flatten.delete_if{|x| (x =~ /127\.0/)||(x =~ /::1/) }.first
     end
   end
   {:ipaddress => server_ip, :hostname => member['hostname']}
