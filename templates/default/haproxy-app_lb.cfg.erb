@@ -35,7 +35,7 @@ defaults
 # Set up application listeners here.
 listen application 0.0.0.0:<%= node["haproxy"]["incoming_port"] %>
   balance <%= node["haproxy"]["balance_algorithm"] %>
-  <% if node["haproxy"]["httpchk_string"] -%>
+  <% if node["haproxy"].has_key?("httpchk_string") -%>
   option  httpchk <%= node["haproxy"]["httpchk_string"] %>
   <% end -%>
   <% @pool_members.each do |member| -%>
